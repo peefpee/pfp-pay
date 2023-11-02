@@ -1,5 +1,6 @@
 from flask import *
 import func
+from flask import request
 
 app = Flask(__name__)
 app.func = func.processor()
@@ -7,7 +8,11 @@ app.func = func.processor()
 
 @app.route('/')
 def index():
-    addy = app.func.create_invoice(1.5, "3GQhVzLgLJgk6XTwir8BgiAVYXTGA3AYRLkArw1JhMY2")
+    return render_template("index.html")
+
+@app.route('/pay')
+def custompay():
+    addy = app.func.create_invoice(request.args.get('amount', default = 1, type = float), request.args.get('address', default = " ", type = str))
     return render_template("payment.html", image_url=addy)
 
 

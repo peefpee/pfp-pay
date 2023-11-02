@@ -1,8 +1,8 @@
 function copy() {
     const copyText = document.getElementById("myInput");
 
-    copyText.select();
-  copyText.setSelectionRange(0, 99999); // For mobile devices
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
 
   navigator.clipboard.writeText(copyText.value);
 
