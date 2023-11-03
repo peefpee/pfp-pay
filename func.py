@@ -24,3 +24,4 @@ class processor:
     def insert_mongo(self,data:dict,col:pymongo.collection.Collection=invoice_collection):
         col.insert_one(data)
 
+
