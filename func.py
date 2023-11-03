@@ -1,4 +1,3 @@
-import qrcode
 from datetime import datetime
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
