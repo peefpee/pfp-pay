@@ -23,3 +23,4 @@ if __name__ == '__main__':
     app.func.mongo_database("pfppay")
     app.func.mongo_collection("invoices")
     app.run(debug=True)
+

@@ -35,3 +35,4 @@ class processor:
 
     def insert_mongo(self, data: dict):
         self.invoice_collection.insert_one(data)
+
