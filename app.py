@@ -1,7 +1,7 @@
 from flask import *
-import func
+import func,json
 from flask import request
-
+config = json.load(open('config.json'))
 app = Flask(__name__)
 app.func = func.processor()
 
@@ -17,4 +17,6 @@ def custompay():
 
 
 if __name__ == '__main__':
+    app.func.connect_mongo(config["mongodb"])
+    print(app.func.client)
     app.run(debug=True)
