@@ -19,4 +19,7 @@ def custompay():
 if __name__ == '__main__':
     app.func.connect_mongo(config["mongodb"])
     print(app.func.client)
+
+    app.func.mongo_database("pfppay")
+    app.func.mongo_collection("invoices")
     app.run(debug=True)
