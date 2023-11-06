@@ -9,3 +9,10 @@ body {
   margin-right: auto;
   width: 10%;
 }
+.infotext{
+  & p {
+    color : white;
+    text-align: center;
+  }
+
+}
