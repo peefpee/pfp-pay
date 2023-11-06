@@ -9,15 +9,19 @@ class processor:
     database = None
     invoice_collection = None
 
+    def create_qrcode(self, amount: float, address: str):
+        return f"https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=bitcoin:{address}?amount={amount}"
+
     def create_invoice(self, amount: float, address: str):
+        id = self.invoice_collection.count_documents({}) + 1
         invoice = {
-            "invoice_id": self.invoice_collection.count_documents({}) + 1,
+            "invoice_id": id,
             "address": address,
             "amount": amount
         }
         self.insert_mongo(invoice)
 
-        return f"https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=bitcoin:{address}?amount={amount}"
+        return self.create_qrcode(amount, address),id
 
     def connect_mongo(self, url: str):
         self.client = MongoClient(url, server_api=ServerApi('1'))
@@ -36,3 +40,5 @@ class processor:
     def insert_mongo(self, data: dict):
         self.invoice_collection.insert_one(data)
 
+    def find_mongo(self, data: dict):
+        return self.invoice_collection.find(data)
