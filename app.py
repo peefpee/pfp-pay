@@ -17,9 +17,12 @@ def index():
 
 @app.route('/pay')
 def custompay():
-    addy,id = app.func.create_invoice(request.args.get('amount', default=1, type=float),
-                                   request.args.get('address', default=" ", type=str))
-    return render_template("payment.html", image_url=addy,invoiceid=id)
+    addy, id = app.func.create_invoice(request.args.get('amount', default=1, type=float),
+                                       request.args.get('address', default=" ", type=str))
+
+    return render_template("payment.html", image_url=addy, invoiceid=id,
+                           address=request.args.get('address', default=" ", type=str),
+                           amount=request.args.get('amount', default=1, type=float))
 
 
 @app.route('/payinvoice')
@@ -27,7 +30,8 @@ def payinvoice():
     data = json.loads(
         dumps(list(app.func.find_mongo({"invoice_id": request.args.get('id', default="0", type=int)})), indent=2))[0]
     return render_template("payment.html", image_url=app.func.create_qrcode(data["amount"], data["address"]),
-                           invoiceid=request.args.get('id', default="0", type=int))
+                           invoiceid=request.args.get('id', default="0", type=int), amount=data["amount"],
+                           address=data["address"])
 
 
 if __name__ == '__main__':
