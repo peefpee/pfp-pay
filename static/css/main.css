@@ -14,7 +14,4 @@ body {
     color : white;
     text-align: center;
   }
-  & input {
-    background-color:: blue;
-  }
 }

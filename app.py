@@ -17,10 +17,10 @@ def index():
 
 @app.route('/pay')
 def custompay():
-    addy, id = app.func.create_invoice(request.args.get('amount', default=1, type=float),
-                                       request.args.get('address', default=" ", type=str))
+    addy, invoiceid = app.func.create_invoice(request.args.get('amount', default=1, type=float),
+                                              request.args.get('address', default=" ", type=str))
 
-    return render_template("payment.html", image_url=addy, invoiceid=id,
+    return render_template("payment.html", image_url=addy, invoiceid=invoiceid,
                            address=request.args.get('address', default=" ", type=str),
                            amount=request.args.get('amount', default=1, type=float))
 
