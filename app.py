@@ -15,7 +15,6 @@ def custompay():
     return render_template("payment.html", image_url=addy)
 
 
-
 if __name__ == '__main__':
     app.func.connect_mongo(config["mongodb"])
     print(app.func.client)
