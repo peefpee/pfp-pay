@@ -2,7 +2,12 @@ from datetime import datetime
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import pymongo
-
+class invoice:
+    def __init__(self,invoice_id:int,address:str,amount:float,paid:bool):
+        self.invoice_id = invoice_id
+        self.address = address
+        self.amount = amount
+        self.paid = paid
 
 class processor:
     client = None
@@ -42,3 +47,6 @@ class processor:
 
     def find_mongo(self, data: dict):
         return self.invoice_collection.find(data)
+
+    def count_mongo(self,collection=invoice_collection):
+        return collection.count_documents({}) 

@@ -1,7 +1,6 @@
 from bson.json_util import dumps
 from flask import *
 from flask import request
-
 import func
 import json
 
@@ -32,6 +31,14 @@ def payinvoice():
     return render_template("payment.html", image_url=app.func.create_qrcode(data["amount"], data["address"]),
                            invoiceid=request.args.get('id', default="0", type=int), amount=data["amount"],
                            address=data["address"])
+
+
+@app.route('/testpay')
+def testpay():
+    invoice = func.invoice(app.func.count_mongo(app.func.invoice_collection),"test",1,True)
+
+    return  invoice
+
 
 
 if __name__ == '__main__':
