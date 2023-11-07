@@ -26,19 +26,35 @@ def custompay():
 
 @app.route('/payinvoice')
 def payinvoice():
-    data = json.loads(
-        dumps(list(app.func.find_mongo({"invoice_id": request.args.get('id', default="0", type=int)})), indent=2))[0]
+    return 'Go to /payinvoice/<id>',301
+@app.route('/payinvoice/<invoiceid>')
+def payinvoiceid(invoiceid):
+    invoiceid = int(invoiceid)
+    if invoiceid == 1:
+        return "404", 404
+    elif invoiceid >= app.func.count_mongo(app.func.invoice_collection):
+        return "404", 404
+    dataa = list(app.func.find_mongo({"invoice_id": invoiceid}))
+    print(dataa)
+    data = json.loads(dumps(dataa, indent=2))[0]
     return render_template("payment.html", image_url=app.func.create_qrcode(data["amount"], data["address"]),
-                           invoiceid=request.args.get('id', default="0", type=int), amount=data["amount"],
+                           invoiceid=invoiceid, amount=data["amount"],
                            address=data["address"])
 
 
-@app.route('/testpay')
+@app.route('/test/pay')
 def testpay():
-    invoice = func.invoice(app.func.count_mongo(app.func.invoice_collection),"test",1,True)
+    invoice = func.invoice(app.func.count_mongo(app.func.invoice_collection), "test", 1, True)
+    print(invoice.invoice_id)
+    return invoice.address
 
-    return  invoice
 
+@app.route('/test/create_invoice')
+def testcreateinvoice():
+    invoice = func.invoice(app.func.count_mongo(app.func.invoice_collection) + 1, request.args.get('address', type=str),
+                           request.args.get('amount', type=int), False)
+    app.func.add_invoice(invoice)
+    return 'ok'
 
 
 if __name__ == '__main__':
