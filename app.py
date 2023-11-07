@@ -26,7 +26,9 @@ def custompay():
 
 @app.route('/payinvoice')
 def payinvoice():
-    return 'Go to /payinvoice/<id>',301
+    return 'Go to /payinvoice/<id>', 301
+
+
 @app.route('/payinvoice/<invoiceid>')
 def payinvoiceid(invoiceid):
     invoiceid = int(invoiceid)
