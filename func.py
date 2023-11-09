@@ -56,7 +56,7 @@ class processor:
 
     def add_invoice(self, invoicedata):
         data = {
-            "id": invoicedata.invoice_id,
+            "invoice_id": invoicedata.invoice_id,
             "address": invoicedata.address,
             "amount": invoicedata.amount,
             "paid": invoicedata.paid

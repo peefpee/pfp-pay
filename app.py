@@ -15,18 +15,13 @@ def index():
 
 
 @app.route('/pay')
-def custompay():
-    addy, invoiceid = app.func.create_invoice(request.args.get('amount', default=1, type=float),
-                                              request.args.get('address', default=" ", type=str))
-
-    return render_template("payment.html", image_url=addy, invoiceid=invoiceid,
-                           address=request.args.get('address', default=" ", type=str),
-                           amount=request.args.get('amount', default=1, type=float))
+def pay():
+    return  render_template('pay.html')
 
 
 @app.route('/payinvoice')
 def payinvoice():
-    return 'Go to /payinvoice/<id>', 301
+    return 'Go to /payinvoice/<invoiceid>', 301
 
 
 @app.route('/payinvoice/<invoiceid>')
@@ -37,8 +32,12 @@ def payinvoiceid(invoiceid):
     elif invoiceid >= app.func.count_mongo(app.func.invoice_collection):
         return "404", 404
     dataa = list(app.func.find_mongo({"invoice_id": invoiceid}))
+    print(list(app.func.find_mongo({})))
     print(dataa)
     data = json.loads(dumps(dataa, indent=2))[0]
+    print(data)
+    if data["paid"]:
+        return render_template("paid.html")
     return render_template("payment.html", image_url=app.func.create_qrcode(data["amount"], data["address"]),
                            invoiceid=invoiceid, amount=data["amount"],
                            address=data["address"])
@@ -54,8 +53,14 @@ def testpay():
 @app.route('/test/create_invoice')
 def testcreateinvoice():
     invoice = func.invoice(app.func.count_mongo(app.func.invoice_collection) + 1, request.args.get('address', type=str),
-                           request.args.get('amount', type=int), False)
+                           request.args.get('amount', type=float), False)
     app.func.add_invoice(invoice)
+    return 'ok'
+
+
+@app.route('/test/delete')
+def testdelete():
+    app.func.invoice_collection.delete_many({})
     return 'ok'
 
 
