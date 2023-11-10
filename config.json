@@ -1,5 +1,4 @@
 
 {
-  "privatekey" : "",
   "mongodb" : "mongodb+srv://pfp:A20080731bc!@cluster0.fs74n5k.mongodb.net/?retryWrites=true&w=majority"
 }

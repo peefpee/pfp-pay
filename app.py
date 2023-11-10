@@ -23,19 +23,23 @@ def pay():
 def payinvoice():
     return 'Go to /payinvoice/<invoiceid>', 301
 
+@app.route('/pay/create',methods = ["GET"])
+def paycreate():
+    invoice = func.invoice(app.func.count_mongo(app.func.invoice_collection) + 1, request.args.get('address', type=str),
+                           request.args.get('amount', type=float), False)
+    app.func.add_invoice(invoice)
+    return redirect(f'{url_for("payinvoice")}/{invoice.invoice_id}')
+
+
 
 @app.route('/payinvoice/<invoiceid>')
 def payinvoiceid(invoiceid):
+
     invoiceid = int(invoiceid)
-    if invoiceid == 1:
-        return "404", 404
-    elif invoiceid >= app.func.count_mongo(app.func.invoice_collection):
-        return "404", 404
+    if invoiceid > app.func.count_mongo(app.func.invoice_collection):
+        return '404' , 404
     dataa = list(app.func.find_mongo({"invoice_id": invoiceid}))
-    print(list(app.func.find_mongo({})))
-    print(dataa)
     data = json.loads(dumps(dataa, indent=2))[0]
-    print(data)
     if data["paid"]:
         return render_template("paid.html")
     return render_template("payment.html", image_url=app.func.create_qrcode(data["amount"], data["address"]),

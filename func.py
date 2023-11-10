@@ -52,6 +52,7 @@ class processor:
         return self.invoice_collection.find(data)
 
     def count_mongo(self, collection=invoice_collection):
+        print(collection)
         return collection.count_documents({})
 
     def add_invoice(self, invoicedata):
