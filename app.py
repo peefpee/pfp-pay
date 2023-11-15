@@ -3,6 +3,7 @@ import json
 from bson.json_util import dumps
 from flask import *
 from flask import request
+from flask_wtf.csrf import CSRFProtect, CSRFError
 
 import func
 import requests
@@ -10,11 +11,18 @@ import requests
 config = json.load(open('config.json'))
 app = Flask(__name__)
 app.func = func.processor()
+app.secret_key = config["secretkey"]
+csrf = CSRFProtect(app)
 
 
 @app.route('/')
 def index():
     return render_template("index.html")
+
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    return render_template('csrf.html'), 400
 
 
 @app.route('/pay')
@@ -27,15 +35,15 @@ def payinvoice():
     return 'Go to /payinvoice/<invoiceid>', 301
 
 
-@app.route('/pay/create', methods=["GET"])
+@app.route('/pay/create', methods=["POST"])
 def paycreate():
-    addy = request.args.get('address', type=str)
-    url = f"http://127.0.0.1:5000/{url_for('apicheckbtc',addy=addy)}"
+    addy = request.form.get('address', type=str)
+    url = f"http://127.0.0.1:5000/{url_for('apicheckbtc', addy=addy)}"
     print(url)
     if not requests.get(url).json()["Success"]:
         return {"Success": "False", "Error": "Invalid Address"}, 401
     invoice = func.invoice(app.func.count_mongo(app.func.invoice_collection) + 1, addy,
-                           request.args.get('amount', type=float), False)
+                           request.form.get('amount', type=float), False)
     app.func.add_invoice(invoice)
     return redirect(f'{url_for("payinvoice")}/{invoice.invoice_id}')
 
@@ -52,13 +60,6 @@ def payinvoiceid(invoiceid):
     return render_template("payment.html", image_url=app.func.create_qrcode(data["amount"], data["address"]),
                            invoiceid=invoiceid, amount=data["amount"],
                            address=data["address"])
-
-
-@app.route('/test/pay')
-def testpay():
-    invoice = func.invoice(app.func.count_mongo(app.func.invoice_collection), "test", 1, True)
-    print(invoice.invoice_id)
-    return invoice.address
 
 
 @app.route('/test/create_invoice')
