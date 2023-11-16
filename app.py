@@ -47,7 +47,6 @@ def paycreate():
     app.func.add_invoice(invoice)
     return redirect(f'{url_for("payinvoice")}/{invoice.invoice_id}')
 
-
 @app.route('/payinvoice/<invoiceid>')
 def payinvoiceid(invoiceid):
     invoiceid = int(invoiceid)
