@@ -21,7 +21,7 @@ def index():
 
 
 @app.errorhandler(CSRFError)
-def handle_csrf_error(e):
+def handle_csrf_error():
     return render_template('csrf.html'), 400
 
 
@@ -47,6 +47,7 @@ def paycreate():
     app.func.add_invoice(invoice)
     return redirect(f'{url_for("payinvoice")}/{invoice.invoice_id}')
 
+
 @app.route('/payinvoice/<invoiceid>')
 def payinvoiceid(invoiceid):
     invoiceid = int(invoiceid)
@@ -61,21 +62,13 @@ def payinvoiceid(invoiceid):
                            address=data["address"])
 
 
-@app.route('/test/create_invoice')
-def testcreateinvoice():
-    invoice = func.invoice(app.func.count_mongo(app.func.invoice_collection) + 1, request.args.get('address', type=str),
-                           request.args.get('amount', type=float), False)
-    app.func.add_invoice(invoice)
-    return 'ok'
-
-
-@app.route('/test/delete')
-def testdelete():
+@app.route('/api/delete')
+def apidelete():
     app.func.invoice_collection.delete_many({})
     return 'ok'
 
 
-@app.route('/api/checkbtc/<addy>')
+@app.route('/api/checkbtc/addy/<addy>')
 def apicheckbtc(addy: str):
     r = requests.get(f"https://bitcoinexplorer.org/api/address/{addy}").json()
     if "success" in r:
@@ -83,6 +76,14 @@ def apicheckbtc(addy: str):
             return {"Success": False}, 200
     else:
         return {"Success": True}, 200
+
+
+@app.route('/api/checkbtc/txid/<txid>')
+def apicheckbtctxid(txid: str):
+    r = requests.get(f"https://bitcoinexplorer.org/api/tx/{txid}").json()
+    if "vout" not in r:
+        return {"Success":"False"},200
+    return {"Success":True,"Txid":txid,"Amount":r["vout"][0]["value"]}
 
 
 if __name__ == '__main__':
