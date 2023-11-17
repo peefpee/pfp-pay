@@ -78,7 +78,6 @@ def apidelete():
     app.func.invoice_collection.delete_many({})
     return 'ok'
 
-
 @app.route('/api/checkbtc/addy/<addy>')
 def apicheckbtc(addy: str):
     r = requests.get(f"https://bitcoinexplorer.org/api/address/{addy}").json()
