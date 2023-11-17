@@ -1,5 +1,5 @@
 import json
-
+from datetime import datetime
 from bson.json_util import dumps
 from flask import *
 from flask import request
@@ -62,6 +62,17 @@ def payinvoiceid(invoiceid):
                            address=data["address"])
 
 
+@app.route('/payinvoice/check', methods=["POST"])
+def payinvoiceidcheck():
+    txid = request.form.get("txid")
+    r = requests.get(f'{config["hosturl"]}/api/checkbtc/txid/{txid}').json()
+    a = datetime.now()
+    timestamp =datetime.fromtimestamp(r["Timestamp"] / 1e3)
+    diff = timestamp-a
+    print(diff)
+    return r
+
+
 @app.route('/api/delete')
 def apidelete():
     app.func.invoice_collection.delete_many({})
@@ -82,8 +93,10 @@ def apicheckbtc(addy: str):
 def apicheckbtctxid(txid: str):
     r = requests.get(f"https://bitcoinexplorer.org/api/tx/{txid}").json()
     if "vout" not in r:
-        return {"Success":"False"},200
-    return {"Success":True,"Txid":txid,"Amount":r["vout"][0]["value"]}
+        return {"Success": "False"}, 200
+    print(r["time"])
+    return {"Success": True, "Txid": txid, "Amount": r["vout"][0]["value"], "Timestamp": r["time"],
+            "Output": r["vout"][0]["scriptPubKey"]["address"]}
 
 
 if __name__ == '__main__':
