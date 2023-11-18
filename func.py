@@ -1,7 +1,7 @@
-from datetime import datetime
+import re
+
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
-import pymongo
 
 
 class invoice:
@@ -54,6 +54,12 @@ class processor:
     def count_mongo(self, collection=invoice_collection):
         print(collection)
         return collection.count_documents({})
+    def update_mongo(self,query:dict):
+        search =list(self.find_mongo(query))
+        found = search[0]
+        d = found
+        found["paid"] = True
+        self.invoice_collection.update_one(query,{"$set":found})
 
     def add_invoice(self, invoicedata):
         data = {
@@ -63,3 +69,13 @@ class processor:
             "paid": invoicedata.paid
         }
         self.insert_mongo(data)
+
+    def checkbtc(self,addy):
+        regex = "^(bc1|[13])[a-km-zA-HJ-NP-Z1-9]{25,34}$"
+        p = re.compile(regex)
+        if (addy is None):
+            return False
+        if (re.search(p, addy)):
+            return True
+        else:
+            return False

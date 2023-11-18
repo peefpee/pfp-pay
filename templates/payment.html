@@ -17,7 +17,8 @@
         <label for="txid">txid:</label>
         <input type="text" id="txid" name="txid"><br><br>
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-        <button>button</button>
+        <input type="hidden" name="invoiceid" value="{{invoiceid}}"/>
+        <button>paid</button>
     </form>
 
 </div>
