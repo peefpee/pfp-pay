@@ -1,5 +1,6 @@
 
 {
   "mongodb" : "mongodb+srv://pfp:A20080731bc!@cluster0.fs74n5k.mongodb.net/?retryWrites=true&w=majority",
-  "secretkey" : "fb710420d539fce4ce81ae71"
+  "secretkey" : "fb710420d539fce4ce81ae71",
+  "hosturl" : "http://127.0.0.1:5000"
 }

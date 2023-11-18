@@ -13,8 +13,14 @@
     <p>Invoice id : {{invoiceid}}</p>
     <p>Address : {{address}}</p>
     <p>Amount : {{amount}} BTC</p>
+    <form action="check" method = "post">
+        <label for="txid">txid:</label>
+        <input type="text" id="txid" name="txid"><br><br>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="invoiceid" value="{{invoiceid}}"/>
+        <button>paid</button>
+    </form>
+
 </div>
-
-
 </body>
 </html>
