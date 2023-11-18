@@ -1,5 +1,5 @@
 import json
-
+from datetime import datetime
 from bson.json_util import dumps
 from flask import *
 from flask import request
@@ -62,6 +62,24 @@ def payinvoiceid(invoiceid):
                            address=data["address"])
 
 
+@app.route('/payinvoice/check', methods=["POST"])
+def payinvoiceidcheck():
+    txid = request.form.get("txid")
+    invoiceid = request.form.get("invoiceid")
+    r = requests.get(f'{config["hosturl"]}/api/checkbtc/txid/{txid}').json()
+    if r["Success"] == False:
+        return r["Error"],404
+    a = datetime.timestamp(datetime.now())
+    timestamp = r["Timestamp"]
+    diff = int(a-timestamp)
+    if diff>6000:
+        return {"Success":False,"Error":"Transaction id older than 100 mins"},402
+
+    app.func.update_mongo({"invoice_id": int(invoiceid)})
+    url =f"{config['hosturl']}/payinvoice/{invoiceid}"
+    return redirect(url)
+
+
 @app.route('/api/delete')
 def apidelete():
     app.func.invoice_collection.delete_many({})
@@ -81,11 +99,19 @@ def apicheckbtc(addy: str):
 @app.route('/api/checkbtc/txid/<txid>')
 def apicheckbtctxid(txid: str):
     r = requests.get(f"https://bitcoinexplorer.org/api/tx/{txid}").json()
+    if "error" in r:
+        return {"Success": False,"Error": "Unkown txid"},200
     if "vout" not in r:
-        return {"Success":"False"},200
-    return {"Success":True,"Txid":txid,"Amount":r["vout"][0]["value"]}
+        return {"Success": False,"Error": "Unkown txid"}, 200
+    if "time" not in r:
+        return {"Success": False, "Error": "Transaction not confirmed, Please retry later"}, 200
+    return {"Success": True, "Txid": txid, "Amount": r["vout"][0]["value"], "Timestamp": r["time"],
+            "Output": r["vout"][0]["scriptPubKey"]["address"]}
 
-
+@app.route('/testupdate')
+def testupdate():
+    app.func.update_mongo({"invoice_id":2})
+    return 'done'
 if __name__ == '__main__':
     app.func.connect_mongo(config["mongodb"])
     app.func.mongo_database("pfppay")
