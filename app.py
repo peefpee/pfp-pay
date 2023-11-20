@@ -109,9 +109,6 @@ def apicheckbtctxid(txid: str):
             "Output": r["vout"][0]["scriptPubKey"]["address"]}
 
 
-
-
-
 if __name__ == '__main__':
     app.func.connect_mongo(config["mongodb"])
     app.func.mongo_database("pfppay")

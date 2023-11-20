@@ -1,11 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Lora&display=swap');
 body {
-  background: linear-gradient(to right, navy, black);
-  font-family: "Lora";
+  background: bisque;
+    font-family: "Lora", serif;
   
 }
 
-p {
-    color: white;
-
+div {
+  background: blanchedalmond;
+  width: 300px;
+  height: 300px;
+  padding: 100px;
+  border: 3px solid rgb(128, 128, 128);
+  color : black;
+  position: fixed;
+  margin-top: 300px;
+  margin-left: 600px;
+  box-shadow: 5px 5px 5px 5px black;
+}
+div:hover{
+  box-shadow: 6px 6px 6px 6px black;
 }
