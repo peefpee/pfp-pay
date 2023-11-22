@@ -6,7 +6,7 @@ body {
 }
 
 div {
-  background: blanchedalmond;
+  background: azure;
   width: 300px;
   height: 300px;
   padding: 100px;
@@ -15,8 +15,23 @@ div {
   position: fixed;
   margin-top: 300px;
   margin-left: 600px;
-  box-shadow: 5px 5px 5px 5px black;
+  box-shadow: 4px 4px 4px 4px black;
+  transition: all 0.6s;
+  & button {
+    background: lightblue;
+    border-radius: 8px;
+    width: 125px;
+    height: 55px;
+    transition: all 1s ease;
+  }
+  & button:hover{
+    background: white;
+  }
+  & p {
+  }
+
 }
 div:hover{
   box-shadow: 6px 6px 6px 6px black;
 }
+

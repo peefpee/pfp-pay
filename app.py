@@ -4,7 +4,6 @@ from bson.json_util import dumps
 from flask import *
 from flask import request
 from flask_wtf.csrf import CSRFProtect, CSRFError
-
 import func
 import requests
 
@@ -13,7 +12,6 @@ app = Flask(__name__)
 app.func = func.processor()
 app.secret_key = config["secretkey"]
 csrf = CSRFProtect(app)
-
 
 @app.route('/')
 def index():
@@ -107,6 +105,15 @@ def apicheckbtctxid(txid: str):
         return {"Success": False, "Error": "Transaction not confirmed, Please retry later"}, 200
     return {"Success": True, "Txid": txid, "Amount": r["vout"][0]["value"], "Timestamp": r["time"],
             "Output": r["vout"][0]["scriptPubKey"]["address"]}
+
+@app.route('/about')
+def about():
+    return render_template("about.html")
+
+
+
+
+
 
 
 if __name__ == '__main__':
